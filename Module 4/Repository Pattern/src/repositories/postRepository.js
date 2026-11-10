@@ -1,13 +1,16 @@
-const postStore = require('../data/postStore');
-
 /**
- * Storage boundary for posts.
- * When Prisma replaces the in-memory store, only this repository's data-access
- * implementation and configuration change. The exported method contract and
- * service business rules remain unchanged.
+ * Post repository: the private Map is the storage implementation.
+ *
+ * When Prisma replaces this Map, only this repository's data-access code and
+ * configuration change. Its five exported methods keep the same return
+ * contract, so service business rules, controllers, and routes stay unchanged.
  */
+const initialPosts = [
+  { id: 1, title: 'First post', body: 'Repository boundaries protect change.', authorId: 7 },
+  { id: 2, title: 'Second post', body: 'Services should speak in domain language.', authorId: 8 },
+];
 
-let postsById = new Map(postStore.posts.map((post) => [post.id, { ...post }]));
+const postsById = new Map(initialPosts.map((post) => [post.id, { ...post }]));
 let nextId = Math.max(0, ...postsById.keys()) + 1;
 
 function findAll() {
@@ -20,7 +23,7 @@ function findById(id) {
 }
 
 function create(fields) {
-  const record = { id: nextId++, ...fields };
+  const record = { ...fields, id: nextId++ };
   postsById.set(record.id, record);
   return { ...record };
 }
