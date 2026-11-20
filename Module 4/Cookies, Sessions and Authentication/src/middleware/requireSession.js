@@ -1,5 +1,16 @@
-// TODO: read req.signedCookies.sid, resolve the server session,
-// attach identity to the request, and return generic 401 when invalid.
+const sessionStore = require('../session/sessionStore');
+
 module.exports = function requireSession(req, res, next) {
-  next();
+  const sessionId = req.signedCookies && req.signedCookies.sid;
+  const session = sessionStore.get(sessionId);
+
+  if (!session) {
+    return res.status(401).json({
+      error: { code: 'UNAUTHENTICATED', message: 'Authentication required' },
+    });
+  }
+
+  req.session = session;
+  req.userId = session.userId;
+  return next();
 };
