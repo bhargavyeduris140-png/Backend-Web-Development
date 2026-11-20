@@ -15,7 +15,7 @@ Refactor a working but messy `articles-api` into three supporting layers: `valid
 
 ## Tasks
 
-The app currently has validation inline in routes and `process.env` read in several files. Reorganise it:
+The app currently has validation inline in routes and environment variables are read in several files. Reorganise it:
 
 1. `validators/article.validator.js` — move the inline `createArticle` / `updateArticle` chains here; import them in `routes/articles.js`.
 2. `utils/AppError.js`, `utils/asyncHandler.js`, `utils/validateRequest.js` — create these pure helpers (no imports from app layers).
@@ -27,7 +27,4 @@ See `question.md` for the full brief and testing examples.
 
 ## Self-Audit
 
-After refactoring, this should return only `config/index.js`:
-```bash
-grep -rn "process.env" . | grep -v node_modules
-```
+After refactoring, environment-variable access should be centralized in `config/index.js`.
